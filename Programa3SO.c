@@ -206,13 +206,17 @@ int main(){
                 }
                 memory_print(marco_pagina);
                 if(desbordamiento==0){
-                    printf("Proceso en ejecucion: %d\n",Proceso);
-                    printf("Direccion Virtual= %d %d\n",Entrada[j+(vuelta*4)-4][1],Entrada[j+(vuelta*4)-4][2]);
-                    printf("Direccion Real= %d\n\n",(Entrada[j+(vuelta*4)-4][1]*mp[Indice_Proceso][0])
+			
+                    printf("El proceso %d se esta ejecutando...\n",Proceso);
+		    printf("Direcciones: \n");
+                    printf("Virtual: %d %d\n",Entrada[j+(vuelta*4)-4][1],Entrada[j+(vuelta*4)-4][2]);
+                    printf("Real:  %d\n",(Entrada[j+(vuelta*4)-4][1]*mp[Indice_Proceso][0])
                     +Entrada[j+(vuelta*4)-4][2] );
+		    printf("\n");
+			
                 }
                 desbordamiento=0;
-	    		j++;
+	    	j++;
     		}
     	}
     	Acceso=0;
@@ -230,7 +234,7 @@ int main(){
     		}
     	}
         if(Terminados==4){
-            Impresion_Memoria(marco_pagina);
+            memory_print(marco_pagina);
             exit(0);
         }
     	
