@@ -30,7 +30,7 @@ int Numero_Filas_Funcion(FILE *Archivo){
     return Contador_Columna;
 }
 
-int Impresion_Memoria(int marco_pagina[5][4]){
+int Impresion_Memoria(int mp[5][4]){
 	int l=0;
 	int k=0;
     printf("\n---------------ESTADO DE MEMORIA-------------------------\n");
@@ -41,7 +41,7 @@ int Impresion_Memoria(int marco_pagina[5][4]){
     	printf("\n");
     	for (k = 0; k < 4; ++k)
     	{
-    		printf("%d\t",marco_pagina[l][k]);
+    		printf("%d\t",mp[l][k]);
     	}
     }
 
@@ -50,13 +50,13 @@ int Impresion_Memoria(int marco_pagina[5][4]){
 return 0;
 }
 
-int Busqueda_Proceso(int marco_pagina[5][4],int Proceso,int Pagina){
+int Busqueda_Proceso(int mp[5][4],int Proceso,int Pagina){
 
 	int Regreso=0;
 	int i;
 	for (i = 0; i < 5; ++i)
 	{
-		if((marco_pagina[i][1]==Proceso) && (marco_pagina[i][2]==Pagina)){
+		if((mp[i][1]==Proceso) && (mp[i][2]==Pagina)){
 			Regreso=i;
 			break;
 		}
@@ -161,16 +161,16 @@ int main(){
     int pagina=0;
     int marco = 5;
     int fila = 0;
-    int marco_pagina[5][4];
+    int mp[5][4];
     int Contador=0;
 
     for (j = 0; j < marco; j++){
-        marco_pagina[fila][0]=fila;//Definimos el numero de marco esto será estatico de 0 a 4
+        mp[fila][0]=fila;//Definimos el numero de marco esto será estatico de 0 a 4
 
         if(tabla_procesos[Contador][2] > pagina){
-        marco_pagina[fila][1] = tabla_procesos[Contador][0];
-        marco_pagina[fila][2] = pagina;//la pagina que toque
-        marco_pagina[fila][3] = 0;
+        mp[fila][1] = tabla_procesos[Contador][0];
+        mp[fila][2] = pagina;//la pagina que toque
+        mp[fila][3] = 0;
         fila++;//Aumentamos el numero de fila
     	}
 
@@ -205,12 +205,12 @@ int main(){
     	if(Acceso==1){
 
 	    	while((Entrada[j+(vuelta*4)-4][0]==1) && (cont4+(vuelta*4)-4)<=4*vuelta){
-	    		Indice_Proceso=Busqueda_Proceso(marco_pagina,Proceso,Entrada[j+(vuelta*4)-4][1]);
+	    		Indice_Proceso=Busqueda_Proceso(mp,Proceso,Entrada[j+(vuelta*4)-4][1]);
 	    		if(Indice_Proceso==5){
 
 
                     for (i = 0; i < 5; ++i){
-                        if(marco_pagina[i][1]==0){
+                        if(mp[i][1]==0){
                             Huecos_Presentes=1;
                             break;
                         }
@@ -222,26 +222,26 @@ int main(){
                     }
 
 	    			for (i = 0; i < 4; ++i){
-    					if(marco_pagina[i][3]<=marco_pagina[i+1][3]){
-    						Menor=marco_pagina[i][3];
+    					if(mp[i][3]<=mp[i+1][3]){
+    						Menor=mp[i][3];
     					}
     					else{
-    						Menor=marco_pagina[i+1][3];
+    						Menor=mp[i+1][3];
     					}
     				}
 				    				
     				for (i = 0; i < 5; ++i){
-    					if(marco_pagina[i][3]==Menor){
-    						marco_pagina[i][1]=Proceso;
-    						marco_pagina[i][2]=Entrada[j+(vuelta*4)-4][1];
-    						marco_pagina[i][3]=1;
+    					if(mp[i][3]==Menor){
+    						mp[i][1]=Proceso;
+    						mp[i][2]=Entrada[j+(vuelta*4)-4][1];
+    						mp[i][3]=1;
                             break;
     					}
     				}
 	    		}
 
                 if(Entrada[j+(vuelta*4)-4][1]==marco_pagina[Indice_Proceso][2]){
-                    marco_pagina[Indice_Proceso][3]++;//Aumentamos la frecuencia 
+                    mp[Indice_Proceso][3]++;//Aumentamos la frecuencia 
                 }
 
                 if(Entrada[j+(vuelta*4)-4][2]>=20){
@@ -249,10 +249,10 @@ int main(){
                     desbordamiento=1;
                     printf("Proceso eliminado: %d\n",Proceso);
                     for (i = 0; i < 5; ++i){
-                        if(marco_pagina[i][1]==Entrada[j+(vuelta*4)-4][2]){
-                            marco_pagina[i][1]=0;
-                            marco_pagina[i][2]=0;
-                            marco_pagina[i][3]=0;
+                        if(mp[i][1]==Entrada[j+(vuelta*4)-4][2]){
+                            mp[i][1]=0;
+                            mp[i][2]=0;
+                            mp[i][3]=0;
                             break;
                         }
                     }
@@ -266,7 +266,7 @@ int main(){
                 if(desbordamiento==0){
                     printf("Proceso en ejecucion: %d\n",Proceso);
                     printf("Direccion Virtual= %d %d\n",Entrada[j+(vuelta*4)-4][1],Entrada[j+(vuelta*4)-4][2]);
-                    printf("Direccion Real= %d\n\n",(Entrada[j+(vuelta*4)-4][1]*marco_pagina[Indice_Proceso][0])
+                    printf("Direccion Real= %d\n\n",(Entrada[j+(vuelta*4)-4][1]*mp[Indice_Proceso][0])
                     +Entrada[j+(vuelta*4)-4][2] );
                 }
                 desbordamiento=0;
@@ -281,9 +281,9 @@ int main(){
     		printf("Termino el proceso %d procedemos a liberar memoria\n",Proceso );
     		for (i = 0; i < 5; ++i){
     			if(marco_pagina[i][1]==Proceso){
-    				marco_pagina[i][1]=0;
-    				marco_pagina[i][2]=0;
-    				marco_pagina[i][3]=0;
+    				mp[i][1]=0;
+    				mp[i][2]=0;
+    				mp[i][3]=0;
     			}
     		}
     	}
