@@ -6,28 +6,28 @@
 
 
 
-int Numero_Filas_Funcion(FILE *Archivo){
-    Archivo = fopen("Entrada.txt", "r");
-    int Caracter = 0;
-    int Contador_Columna = 0;
+int num_columnas(FILE *fp, char *nombre_archivo){
+    fp = fopen(nombre_archivo, "r");
+    int numchar = 0;
+    int num_columna = 0;
     int i=0;
 
-    Archivo = fopen("Entrada.txt", "r");
+    fp = fopen(nombre_archivo, "r");
 
-    if (Archivo == NULL){
-        printf ("No existe el archivo con ese nombre.\n\n");
-        exit(0);
+    if (fp == NULL){
+        printf ("No se encontro el archivo %s\n", nombre_archivo);
+        return -1;
     }
 
-    while ((Caracter = fgetc(Archivo)) != EOF){//EOF es cuando se llegue al final del archivo 
+    while ((numchar = fgetc(fp)) != EOF){ 
 
-        while(Caracter != '\n' && Caracter != EOF)
-            Caracter=fgetc(Archivo);
+        while(numchar != '\n' && numchar != EOF)
+            numchar=fgetc(fp);
 
-        Contador_Columna++;
+        num_columna++;
     }
-    fclose(Archivo);
-    return Contador_Columna;
+    fclose(fp);
+    return num_columna;
 }
 
 int Impresion_Memoria(int mp[5][4]){
