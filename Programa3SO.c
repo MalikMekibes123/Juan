@@ -6,147 +6,145 @@
 
 int main(){
     FILE *fp;
-    int j=0,k=0;
-    int Proceso=0; 
+    int proc=0; 
+    int j=0;
+    int k=0;
     char nombre_archivo[50];
 
     printf("Escribe el nombre del archivo de prueba \n");
     fflush(stdin);
     gets(nombre_archivo);
-    int num_columna = num_columnas(fp, nombre_archivo);
-    int Entrada[num_columna][3];  
-    int Cantidad_Procesos=0;
+
+    int num_procesos=0;
+    int num_columna = num_columnas(fp, nombre_archivo);  
+    int content[num_columna][3];
+
 
     fp = fopen(nombre_archivo, "r");
 
         for (j = 0; j < num_columna; j++){
         for(k=0;k< 3;k++)
-        	fscanf(fp, "%d", &Entrada[j][k]);
+        	fscanf(fp, "%d", &content[j][k]);
     }
-
-    printf("\n---------------ENTRADA-------------------------\n");
-    printf("Registro\tProceso\t\tTamaño\n");
-
-
-    for (j = 0; j < num_columna; j++){
-    	printf("\n");
-        for(k=0;k< 3;k++)
-        	printf(" %d\t\t", Entrada[j][k]);
-    }
-    printf(" \n\n ");
 
     fclose(fp);
 
     for(j = 0; j < num_columna; j++){
-    	if(Entrada[j][0] == 0)
-    		Cantidad_Procesos++;//Todos los procesos empiezan en el registro 0 por ello cada que 
-    	//se lea un 0 podemos decir que se trata de un  procesos nuevo.
+    	if(content[j][0] == 0)
+    		num_procesos++;
     }
 
-    int tabla_procesos[Cantidad_Procesos][3];
-    double Tamano;
+    
+    double size;
+    int ps[num_procesos][3];
 
     for (j = 0; j < num_columna; j++){
-    	if(Entrada[j][0] == 0){
+    	if(content[j][0] == 0){
     		for(k = 0;k< 3;k++){
-    			if(k<2)
-    			tabla_procesos[Proceso][k] = Entrada[j][k+1];//Llenamos en la nueva tabla el numero de 
-    		//proceso y ademas el tamaño del mismo.
+    			if(k<2){
+
+                    ps[proc][k] = content[j][k+1];
+
+                }
+    			
+
     			if(k==2){
-    				//Hariamos la cuenta para calcular el numero de paginas requerido para cada proceso
-    				//y adjuntarlo en la tercera columna de la tabla nueva 
-    				Tamano = (double)tabla_procesos[Proceso][k-1];//Lo declaramos como double para que se pueda
-    				//dividir y no mande errores.
-    				tabla_procesos[Proceso][k] = ceil(Tamano/20);//La funcion ceil nos da el techo del numero
-    				//para asi siempre asignar la cantidad exacta o mas de tal forma que quepa el proceso
+    				
+    				size = (double)ps[proc][k-1];
+    				ps[proc][k] = ceil(size/20);
+
     			}
     		}
-    	Proceso++;
+    	proc++;
     	}
     }
 
-    printf("\n---------------TABLA PROCESOS-------------------------\n");
-    printf("Proceso\t\tTamaño\t\tNumero Paginas (Calculado)\n");
+    printf("\nTabla de procesos:\n");
+    printf("Proceso\t\tTamaño\t\tNumero de Paginas \n");
 
-    for (j = 0; j < Cantidad_Procesos; j++){
+    for (j = 0; j < num_procesos; j++){
 		printf("\n");
     	for(k=0;k< 3;k++)
-    		printf(" %d\t\t ", tabla_procesos[j][k]);
+    		printf(" %d\t\t ", ps[j][k]);
 	}
 	printf("\n\n");
 
-    int tabla_direcciones[num_columna-Cantidad_Procesos][2];
-    Proceso=0;
+    int tabla_direcciones[num_columna-num_procesos][2];
+    proc=0;
 
-    printf("\n---------------TABLA DIRECCIONES POR PROCESO-------------------------\n");
+    printf("\nTabla de Direcciones:\n");
 
     for(j = 0; j< num_columna; j++){
-        if(Entrada[j][0]==0){
-        	printf("\n\n-----PROCESO %d------ \n",Entrada[j][1]);
-        	printf("Pagina\t\tDesplazamiento\n");
+        if(content[j][0]==0){
+
+        	printf("\n\nProceso: %d \n",content[j][1]);
+        	printf("Pág.\t\tDesp.\n");
+
         }
 
-        if(Entrada[j][0]==1){
-            tabla_direcciones[Proceso][0]= Entrada[j][1];
+        if(content[j][0]==1){
+
+            tabla_direcciones[proc][0]= content[j][1];
             for(k =1;k<=2;k++){
-                tabla_direcciones[Proceso][j]= Entrada[j][k];
-                printf("%d\t\t",tabla_direcciones[Proceso][j]);
+
+                tabla_direcciones[proc][j]= content[j][k];
+                printf("%d\t\t",tabla_direcciones[proc][j]);
+
             }
+
             printf("\n");
-            Proceso++;
+            proc++;
         }  
     }
 
-    //Carga Inicial
-    int pagina=0;
+    int pag=0;
     int marco = 5;
     int fila = 0;
     int mp[5][4];
     int Contador=0;
 
     for (j = 0; j < marco; j++){
-        mp[fila][0]=fila;//Definimos el numero de marco esto será estatico de 0 a 4
+        mp[fila][0]=fila;
 
-        if(tabla_procesos[Contador][2] > pagina){
-        mp[fila][1] = tabla_procesos[Contador][0];
-        mp[fila][2] = pagina;//la pagina que toque
+        if(ps[Contador][2] > pag){
+
+        mp[fila][1] = ps[Contador][0];
+        mp[fila][2] = pag;
         mp[fila][3] = 0;
-        fila++;//Aumentamos el numero de fila
+        fila++;
     	}
 
     	Contador++;
-    	Contador = Contador % Cantidad_Procesos;
+    	Contador = Contador % num_procesos;
     	if(Contador ==0 && j>0)
-        	pagina++;
+        	pag++;
     }
 
-    //Inicial
     int cont4=1;
-    int vuelta=1;
-    int Indice_Proceso=0;
     int Acceso=1;
-    Proceso=0;
-    j=0;
+    int vuelta=1;
+    int ip=0;
     int i=0;
     int Terminados=0;
     int Menor;
     int Huecos_Presentes=0;
     int desbordamiento=0;
+    proc=0;
+    j=0;
 
-    //Frecuencias Iniciales
     while(j<num_columna){
 
-    	Proceso=Entrada[j][1];
-    	if(Entrada[j][0]==0){
+    	proc=content[j][1];
+    	if(content[j][0]==0){
     		j++;
     		Acceso=1;
     	}
 
     	if(Acceso==1){
 
-	    	while((Entrada[j+(vuelta*4)-4][0]==1) && (cont4+(vuelta*4)-4)<=4*vuelta){
-	    		Indice_Proceso=Busqueda_Proceso(mp,Proceso,Entrada[j+(vuelta*4)-4][1]);
-	    		if(Indice_Proceso==5){
+	    	while((content[j+(vuelta*4)-4][0]==1) && (cont4+(vuelta*4)-4)<=4*vuelta){
+	    		ip=trae_Proceso(mp,proc,content[j+(vuelta*4)-4][1]);
+	    		if(ip==5){
 
 
                     for (i = 0; i < 5; ++i){
@@ -158,7 +156,7 @@ int main(){
 
                     if (Huecos_Presentes==0)
                     {
-                        printf("Error de página, se procede al cambio.\n");
+                        printf("Error, cambiando de pagina\n");
                     }
 
 	    			for (i = 0; i < 4; ++i){
@@ -172,24 +170,29 @@ int main(){
 				    				
     				for (i = 0; i < 5; ++i){
     					if(mp[i][3]==Menor){
-    						mp[i][1]=Proceso;
-    						mp[i][2]=Entrada[j+(vuelta*4)-4][1];
+    						mp[i][1]=proc;
+    						mp[i][2]=content[j+(vuelta*4)-4][1];
     						mp[i][3]=1;
                             break;
     					}
     				}
 	    		}
 
-                if(Entrada[j+(vuelta*4)-4][1]==mp[Indice_Proceso][2]){
-                    mp[Indice_Proceso][3]++;//Aumentamos la frecuencia 
+                if(content[j+(vuelta*4)-4][1]==mp[ip][2]){
+
+                    mp[ip][3]++;
+
                 }
 
-                if(Entrada[j+(vuelta*4)-4][2]>=20){
-                    printf("Error de desbordamiento, no se anexará el proceso.\n");
+                if(content[j+(vuelta*4)-4][2]>=20){
+
+                    printf("Ocurrio un desborde, el proceso no fue aniadido\n");
                     desbordamiento=1;
-                    printf("Proceso eliminado: %d\n",Proceso);
+                    printf("Se procedio a eliminar el proceso %d\n",proc);
+
                     for (i = 0; i < 5; ++i){
-                        if(mp[i][1]==Entrada[j+(vuelta*4)-4][2]){
+
+                        if(mp[i][1]==content[j+(vuelta*4)-4][2]){
                             mp[i][1]=0;
                             mp[i][2]=0;
                             mp[i][3]=0;
@@ -199,17 +202,17 @@ int main(){
                 }
 
 	    		cont4++;
-                if(Entrada[j+(vuelta*4)-4][0]==0){
+                if(content[j+(vuelta*4)-4][0]==0){
                     break;
                 }
                 memory_print(mp);
                 if(desbordamiento==0){
 			
-                    printf("El proceso %d se esta ejecutando...\n",Proceso);
+                    printf("El proceso %d se esta ejecutando...\n",proc);
 		    printf("Direcciones: \n");
-                    printf("Virtual: %d %d\n",Entrada[j+(vuelta*4)-4][1],Entrada[j+(vuelta*4)-4][2]);
-                    printf("Real:  %d\n",(Entrada[j+(vuelta*4)-4][1]*mp[Indice_Proceso][0])
-                    +Entrada[j+(vuelta*4)-4][2] );
+                    printf("Virtual: %d %d\n",content[j+(vuelta*4)-4][1],content[j+(vuelta*4)-4][2]);
+                    printf("Real:  %d\n",(content[j+(vuelta*4)-4][1]*mp[ip][0])
+                    +content[j+(vuelta*4)-4][2] );
 		    printf("\n");
 			
                 }
@@ -220,13 +223,13 @@ int main(){
     	Acceso=0;
     	cont4=1;
 
-    	if(Entrada[j+(vuelta*4)-4][0]==0){
+    	if(content[j+(vuelta*4)-4][0]==0){
             Terminados++;
-    		printf("El proceso %d finalizo.\n",Proceso );
+    		printf("El proceso %d finalizo.\n",proc );
     		printf("Realizando liberacion de memoria...\n");
         
     		for (i = 0; i < 5; ++i){
-    			if(mp[i][1]==Proceso){
+    			if(mp[i][1]==proc){
             
     				mp[i][1]=0;
     				mp[i][2]=0;
@@ -240,7 +243,7 @@ int main(){
             exit(0);
         }
     	
-    	while(Entrada[j][0]==1){
+    	while(content[j][0]==1){
     		j++;
     		if(j==num_columna-1){
     			j=0;
@@ -280,49 +283,51 @@ int num_columnas(FILE *fp, char *nombre_archivo){
     return num_columna;
 }
 
-int memory_print(int mp[5][4]){
 
-    printf("\n\nEn memoria tenemos:\n");
-    printf("Marco, proceso, pagina y frecuencia de las pàginas :");
+int trae_Proceso(int mp[5][4],int proc,int pag){
 
-    int i=0;
-	int j=0;
-
-    for (i = 0; i < 5; ++i){
-
-    	printf("\n");
-
-    	for (j=0; j<4; ++j){
-
-    		if (j == 3){
-
-    			printf("%d", mp[i][j]);
-
-    		}else{
-
-    			printf("%d,  ",mp[i][j]);
-
-		}
-	}
-    }
-    printf("\n");
-    return 0;
-}
-
-int Busqueda_Proceso(int mp[5][4],int Proceso,int Pagina){
-
-	int Regreso=0;
-	int i;
+    int i;
+	int res;
+	
 	for (i = 0; i < 5; ++i)
 	{
-		if((mp[i][1]==Proceso) && (mp[i][2]==Pagina)){
-			Regreso=i;
+		if((mp[i][1]==proc) && (mp[i][2]==pag)){
+			res=i;
 			break;
 		}
 		if(i==4){
-			Regreso=5;
+			res=5;
 		}
 	}
 
-	return Regreso;
+	return res;
+}
+
+int memory_print(int mp[5][4]){
+
+    printf("\n\nEn memoria tenemos:\n");
+    printf("Marco, proceso, pagina y frecuencia de las paginas :");
+
+    int i=0;
+    int j=0;
+
+    for (i = 0; i < 5; ++i){
+
+        printf("\n");
+
+        for (j=0; j<4; ++j){
+
+            if (j == 3){
+
+                printf("%d", mp[i][j]);
+
+            }else{
+
+                printf("%d, ",mp[i][j]);
+
+            }
+        }
+    }
+    printf("\n");
+    return 0;
 }
