@@ -97,38 +97,45 @@ int main(){
         }  
     }
 
-    int pag=0;
-    int marco = 5;
-    int fila = 0;
     int mp[5][4];
-    int Contador=0;
+    int pag=0;
+    int cont=0;
+    int col = 0;
+    int m = 5;
+    
 
-    for (j = 0; j < marco; j++){
-        mp[fila][0]=fila;
+    for (j = 0; j < m; j++){
+        mp[col][0]=col;
 
-        if(ps[Contador][2] > pag){
+        if(ps[cont][2] > pag){
 
-        mp[fila][1] = ps[Contador][0];
-        mp[fila][2] = pag;
-        mp[fila][3] = 0;
-        fila++;
+            mp[col][1] = ps[cont][0];
+            mp[col][2] = pag;
+            mp[col][3] = 0;
+            col++;
+        
     	}
 
-    	Contador++;
-    	Contador = Contador % num_procesos;
-    	if(Contador ==0 && j>0)
+    	cont++;
+    	cont = cont % num_procesos;
+
+    	if(cont ==0 && j>0){
+
         	pag++;
+
+        }
     }
 
-    int cont4=1;
-    int Acceso=1;
-    int vuelta=1;
+
+    int pasaProceso;
+    int it=1;
     int ip=0;
+    int x=1;
     int i=0;
-    int Terminados=0;
-    int Menor;
-    int Huecos_Presentes=0;
-    int desbordamiento=0;
+    int desp=0;
+    int holes=0;
+    int y;
+    int b=0;
     proc=0;
     j=0;
 
@@ -137,62 +144,76 @@ int main(){
     	proc=content[j][1];
     	if(content[j][0]==0){
     		j++;
-    		Acceso=1;
+    		pasaProceso=1;
     	}
 
-    	if(Acceso==1){
+    	if(pasaProceso==1){
 
-	    	while((content[j+(vuelta*4)-4][0]==1) && (cont4+(vuelta*4)-4)<=4*vuelta){
-	    		ip=trae_Proceso(mp,proc,content[j+(vuelta*4)-4][1]);
+	    	while((content[j+(it*4)-4][0] == 1) && (x+(it*4)-4) <= 4*it){
+
+	    		ip=trae_Proceso(mp,proc,content[j+(it*4)-4][1]);
+
 	    		if(ip==5){
 
 
                     for (i = 0; i < 5; ++i){
+
                         if(mp[i][1]==0){
-                            Huecos_Presentes=1;
+
+                            holes=1;
                             break;
+
                         }
                     }
 
-                    if (Huecos_Presentes==0)
-                    {
-                        printf("Error, cambiando de pagina\n");
+                    if (holes==0){
+
+                        printf("Ha ocurrido un error, se realizarà un cambio de pagina a continuacion\n");
+
                     }
 
 	    			for (i = 0; i < 4; ++i){
+
     					if(mp[i][3]<=mp[i+1][3]){
-    						Menor=mp[i][3];
+
+    						y=mp[i][3];
+
+    					}else{
+
+    						y=mp[i+1][3];
+
     					}
-    					else{
-    						Menor=mp[i+1][3];
-    					}
+
     				}
 				    				
     				for (i = 0; i < 5; ++i){
-    					if(mp[i][3]==Menor){
+
+    					if(mp[i][3]==y){
+
     						mp[i][1]=proc;
-    						mp[i][2]=content[j+(vuelta*4)-4][1];
+    						mp[i][2]=content[j+(it*4)-4][1];
     						mp[i][3]=1;
                             break;
+
     					}
     				}
 	    		}
 
-                if(content[j+(vuelta*4)-4][1]==mp[ip][2]){
+                if(content[j+(it*4)-4][1]==mp[ip][2]){
 
                     mp[ip][3]++;
 
                 }
 
-                if(content[j+(vuelta*4)-4][2]>=20){
+                if(content[j+(it*4)-4][2]>=20){
 
                     printf("Ocurrio un desborde, el proceso no fue aniadido\n");
-                    desbordamiento=1;
+                    b=1;
                     printf("Se procedio a eliminar el proceso %d\n",proc);
 
                     for (i = 0; i < 5; ++i){
 
-                        if(mp[i][1]==content[j+(vuelta*4)-4][2]){
+                        if(mp[i][1]==content[j+(it*4)-4][2]){
                             mp[i][1]=0;
                             mp[i][2]=0;
                             mp[i][3]=0;
@@ -201,30 +222,30 @@ int main(){
                     }
                 }
 
-	    		cont4++;
-                if(content[j+(vuelta*4)-4][0]==0){
+	    		x++;
+                if(content[j+(it*4)-4][0]==0){
                     break;
                 }
                 memory_print(mp);
-                if(desbordamiento==0){
+                if(b==0){
 			
                     printf("El proceso %d se esta ejecutando...\n",proc);
-		    printf("Direcciones: \n");
-                    printf("Virtual: %d %d\n",content[j+(vuelta*4)-4][1],content[j+(vuelta*4)-4][2]);
-                    printf("Real:  %d\n",(content[j+(vuelta*4)-4][1]*mp[ip][0])
-                    +content[j+(vuelta*4)-4][2] );
+		            printf("Direcciones: \n");
+                    printf("Virtual: %d %d\n",content[j+(it*4)-4][1],content[j+(it*4)-4][2]);
+                    printf("Real:  %d\n",(content[j+(it*4)-4][1]*mp[ip][0])
+                    +content[j+(it*4)-4][2] );
 		    printf("\n");
 			
                 }
-                desbordamiento=0;
+                b=0;
 	    	j++;
     		}
     	}
-    	Acceso=0;
-    	cont4=1;
+    	pasaProceso=0;
+    	x=1;
 
-    	if(content[j+(vuelta*4)-4][0]==0){
-            Terminados++;
+    	if(content[j+(it*4)-4][0]==0){
+            desp++;
     		printf("El proceso %d finalizo.\n",proc );
     		printf("Realizando liberacion de memoria...\n");
         
@@ -238,17 +259,23 @@ int main(){
     			}
     		}
     	}
-        if(Terminados==4){
+        if(desp==4){
+
             memory_print(mp);
             exit(0);
+
         }
     	
     	while(content[j][0]==1){
+
     		j++;
+
     		if(j==num_columna-1){
+
     			j=0;
-    			vuelta++;
+    			it++;
     			i=0;
+
     		}
     	}
     }
@@ -257,7 +284,6 @@ int main(){
     
     }    
 
-//FUNCIONES
 
 int num_columnas(FILE *fp, char *nombre_archivo){
     fp = fopen(nombre_archivo, "r");
@@ -265,7 +291,6 @@ int num_columnas(FILE *fp, char *nombre_archivo){
     int num_columna = 0;
     int i=0;
 
-    fp = fopen(nombre_archivo, "r");
 
     if (fp == NULL){
         printf ("No se encontro el archivo %s\n", nombre_archivo);
