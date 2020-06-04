@@ -6,69 +6,6 @@
 
 
 
-int num_columnas(FILE *fp, char *nombre_archivo){
-    fp = fopen(nombre_archivo, "r");
-    int numchar = 0;
-    int num_columna = 0;
-    int i=0;
-
-    fp = fopen(nombre_archivo, "r");
-
-    if (fp == NULL){
-        printf ("No se encontro el archivo %s\n", nombre_archivo);
-        return -1;
-    }
-
-    while ((numchar = fgetc(fp)) != EOF){ 
-
-        while(numchar != '\n' && numchar != EOF)
-            numchar=fgetc(fp);
-
-        num_columna++;
-    }
-    fclose(fp);
-    return num_columna;
-}
-
-int Impresion_Memoria(int mp[5][4]){
-	int l=0;
-	int k=0;
-    printf("\n---------------ESTADO DE MEMORIA-------------------------\n");
-    printf("Marco\tProceso\tPagina\tFrecuencia\n");
-
-    for (l = 0; l < 5; ++l)
-    {
-    	printf("\n");
-    	for (k = 0; k < 4; ++k)
-    	{
-    		printf("%d\t",mp[l][k]);
-    	}
-    }
-
-    printf("\n");
-
-return 0;
-}
-
-int Busqueda_Proceso(int mp[5][4],int Proceso,int Pagina){
-
-	int Regreso=0;
-	int i;
-	for (i = 0; i < 5; ++i)
-	{
-		if((mp[i][1]==Proceso) && (mp[i][2]==Pagina)){
-			Regreso=i;
-			break;
-		}
-		if(i==4){
-			Regreso=5;
-		}
-	}
-
-	return Regreso;
-}
-
-
 int main(){
     FILE *Archivo;
     int j=0,k=0;
@@ -305,3 +242,68 @@ int main(){
     return 0;
     
     }    
+
+//FUNCIONES
+
+int Numero_Filas_Funcion(FILE *Archivo){
+    Archivo = fopen("Entrada.txt", "r");
+    int Caracter = 0;
+    int Contador_Columna = 0;
+    int i=0;
+
+    Archivo = fopen("Entrada.txt", "r");
+
+    if (Archivo == NULL){
+        printf ("No existe el archivo con ese nombre.\n\n");
+        exit(0);
+    }
+
+    while ((Caracter = fgetc(Archivo)) != EOF){//EOF es cuando se llegue al final del archivo 
+
+        while(Caracter != '\n' && Caracter != EOF)
+            Caracter=fgetc(Archivo);
+
+        Contador_Columna++;
+    }
+    fclose(Archivo);
+    return Contador_Columna;
+}
+
+int Impresion_Memoria(int mp[5][4]){
+	int l=0;
+	int k=0;
+    printf("\n---------------ESTADO DE MEMORIA-------------------------\n");
+    printf("Marco\tProceso\tPagina\tFrecuencia\n");
+
+    for (l = 0; l < 5; ++l)
+    {
+    	printf("\n");
+    	for (k = 0; k < 4; ++k)
+    	{
+    		printf("%d\t",mp[l][k]);
+    	}
+    }
+
+    printf("\n");
+
+return 0;
+}
+
+int Busqueda_Proceso(int mp[5][4],int Proceso,int Pagina){
+
+	int Regreso=0;
+	int i;
+	for (i = 0; i < 5; ++i)
+	{
+		if((mp[i][1]==Proceso) && (mp[i][2]==Pagina)){
+			Regreso=i;
+			break;
+		}
+		if(i==4){
+			Regreso=5;
+		}
+	}
+
+	return Regreso;
+}
+
