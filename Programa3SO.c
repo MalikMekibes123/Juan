@@ -204,7 +204,7 @@ int main(){
                 if(Entrada[j+(vuelta*4)-4][0]==0){
                     break;
                 }
-                Impresion_Memoria(marco_pagina);
+                memory_print(marco_pagina);
                 if(desbordamiento==0){
                     printf("Proceso en ejecucion: %d\n",Proceso);
                     printf("Direccion Virtual= %d %d\n",Entrada[j+(vuelta*4)-4][1],Entrada[j+(vuelta*4)-4][2]);
@@ -274,24 +274,33 @@ int num_columnas(FILE *fp, char *nombre_archivo){
     return num_columna;
 }
 
-int Impresion_Memoria(int mp[5][4]){
-	int l=0;
-	int k=0;
-    printf("\n---------------ESTADO DE MEMORIA-------------------------\n");
-    printf("Marco\tProceso\tPagina\tFrecuencia\n");
+int memory_print(int mp[5][4]){
 
-    for (l = 0; l < 5; ++l)
-    {
+    printf("\n\nEn memoria tenemos:\n");
+    printf("Marco, proceso, pagina y frecuencia de las pàginas :");
+
+    int i=0;
+	int j=0;
+
+    for (i = 0; i < 5; ++i){
+
     	printf("\n");
-    	for (k = 0; k < 4; ++k)
-    	{
-    		printf("%d\t",mp[l][k]);
-    	}
+
+    	for (j=0; j<4; ++j){
+
+    		if (j == 3){
+
+    			printf("%d", mp[i][j]);
+
+    		}else{
+
+    			printf("%d,  ",mp[i][j]);
+
+		}
+	}
     }
-
     printf("\n");
-
-return 0;
+    return 0;
 }
 
 int Busqueda_Proceso(int mp[5][4],int Proceso,int Pagina){
