@@ -3,85 +3,22 @@
 #include <string.h>
 #include <math.h>
 
-//Se imprimirá paso por paso todo lo que pasa en memoria
-
-int Numero_Filas_Funcion(FILE *fp, char *nombre_archivo){
-    fp = fopen(nombre_archivo, "r");
-    int Caracter = 0;
-    int Contador_Columna = 0;
-    int i=0;
-
-    fp = fopen(nombre_archivo, "r");
-
-    if (fp == NULL){
-        printf ("No se encontro el archivo %s\n", nombre_archivo);
-        return -1;
-    }
-
-    while ((Caracter = fgetc(fp)) != EOF){//EOF es cuando se llegue al final del archivo 
-
-        while(Caracter != '\n' && Caracter != EOF)
-            Caracter=fgetc(fp);
-
-        Contador_Columna++;
-    }
-    fclose(fp);
-    return Contador_Columna;
-}
-
-int Impresion_Memoria(int marco_pagina[5][4]){
-	int l=0;
-	int k=0;
-    printf("\n---------------ESTADO DE MEMORIA-------------------------\n");
-    printf("Marco\tProceso\tPagina\tFrecuencia\n");
-
-    for (l = 0; l < 5; ++l)
-    {
-    	printf("\n");
-    	for (k = 0; k < 4; ++k)
-    	{
-    		printf("%d\t",marco_pagina[l][k]);
-    	}
-    }
-
-    printf("\n");
-
-return 0;
-}
-
-int Busqueda_Proceso(int marco_pagina[5][4],int Proceso,int Pagina){
-
-	int Regreso=0;
-	int i;
-	for (i = 0; i < 5; ++i)
-	{
-		if((marco_pagina[i][1]==Proceso) && (marco_pagina[i][2]==Pagina)){
-			Regreso=i;
-			break;
-		}
-		if(i==4){
-			Regreso=5;
-		}
-	}
-
-	return Regreso;
-}
-
-
 int main(){
     FILE *fp;
     int j=0,k=0;
-    int Proceso=0; //i es el numero de filas de entrada, k y l contadores
+    int Proceso=0; 
     char nombre_archivo[50];
+
+    printf("Escribe el nombre del archivo de prueba \n");
     fflush(stdin);
     gets(nombre_archivo);
-    int Numero_Filas = Numero_Filas_Funcion(fp, nombre_archivo);
-    int Entrada[Numero_Filas][3];  
+    int num_columna = num_columnas(fp, nombre_archivo);
+    int Entrada[num_columna][3];  
     int Cantidad_Procesos=0;
 
     fp = fopen(nombre_archivo, "r");
 
-        for (j = 0; j < Numero_Filas; j++){
+        for (j = 0; j < num_columna; j++){
         for(k=0;k< 3;k++)
         	fscanf(fp, "%d", &Entrada[j][k]);
     }
@@ -90,7 +27,7 @@ int main(){
     printf("Registro\tProceso\t\tTamaño\n");
 
 
-    for (j = 0; j < Numero_Filas; j++){
+    for (j = 0; j < num_columna; j++){
     	printf("\n");
         for(k=0;k< 3;k++)
         	printf(" %d\t\t", Entrada[j][k]);
@@ -99,7 +36,7 @@ int main(){
 
     fclose(fp);
 
-    for(j = 0; j < Numero_Filas; j++){
+    for(j = 0; j < num_columna; j++){
     	if(Entrada[j][0] == 0)
     		Cantidad_Procesos++;//Todos los procesos empiezan en el registro 0 por ello cada que 
     	//se lea un 0 podemos decir que se trata de un  procesos nuevo.
@@ -108,7 +45,7 @@ int main(){
     int tabla_procesos[Cantidad_Procesos][3];
     double Tamano;
 
-    for (j = 0; j < Numero_Filas; j++){
+    for (j = 0; j < num_columna; j++){
     	if(Entrada[j][0] == 0){
     		for(k = 0;k< 3;k++){
     			if(k<2)
@@ -137,12 +74,12 @@ int main(){
 	}
 	printf("\n\n");
 
-    int tabla_direcciones[Numero_Filas-Cantidad_Procesos][2];
+    int tabla_direcciones[num_columna-Cantidad_Procesos][2];
     Proceso=0;
 
     printf("\n---------------TABLA DIRECCIONES POR PROCESO-------------------------\n");
 
-    for(j = 0; j< Numero_Filas; j++){
+    for(j = 0; j< num_columna; j++){
         if(Entrada[j][0]==0){
         	printf("\n\n-----PROCESO %d------ \n",Entrada[j][1]);
         	printf("Pagina\t\tDesplazamiento\n");
@@ -196,7 +133,7 @@ int main(){
     int desbordamiento=0;
 
     //Frecuencias Iniciales
-    while(j<Numero_Filas){
+    while(j<num_columna){
 
     	Proceso=Entrada[j][1];
     	if(Entrada[j][0]==0){
@@ -296,7 +233,7 @@ int main(){
     	
     	while(Entrada[j][0]==1){
     		j++;
-    		if(j==Numero_Filas-1){
+    		if(j==num_columna-1){
     			j=0;
     			vuelta++;
     			i=0;
@@ -306,5 +243,67 @@ int main(){
 
     return 0;
     
-    }    
+    }
 
+
+int num_columnas(FILE *fp, char *nombre_archivo){
+    fp = fopen(nombre_archivo, "r");
+    int numchar = 0;
+    int num_columna = 0;
+    int i=0;
+
+    fp = fopen(nombre_archivo, "r");
+
+    if (fp == NULL){
+        printf ("No se encontro el archivo %s\n", nombre_archivo);
+        return -1;
+    }
+
+    while ((numchar = fgetc(fp)) != EOF){ 
+
+        while(numchar != '\n' && numchar != EOF)
+            numchar=fgetc(fp);
+
+        num_columna++;
+    }
+    fclose(fp);
+    return num_columna;
+}
+
+int Impresion_Memoria(int marco_pagina[5][4]){
+	int l=0;
+	int k=0;
+    printf("\n---------------ESTADO DE MEMORIA-------------------------\n");
+    printf("Marco\tProceso\tPagina\tFrecuencia\n");
+
+    for (l = 0; l < 5; ++l)
+    {
+    	printf("\n");
+    	for (k = 0; k < 4; ++k)
+    	{
+    		printf("%d\t",marco_pagina[l][k]);
+    	}
+    }
+
+    printf("\n");
+
+return 0;
+}
+
+int Busqueda_Proceso(int marco_pagina[5][4],int Proceso,int Pagina){
+
+	int Regreso=0;
+	int i;
+	for (i = 0; i < 5; ++i)
+	{
+		if((marco_pagina[i][1]==Proceso) && (marco_pagina[i][2]==Pagina)){
+			Regreso=i;
+			break;
+		}
+		if(i==4){
+			Regreso=5;
+		}
+	}
+
+	return Regreso;
+}
