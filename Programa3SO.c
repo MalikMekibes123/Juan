@@ -1,9 +1,7 @@
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-
 
 
 int main(){
@@ -37,7 +35,7 @@ int main(){
     }
     printf(" \n\n ");
 
-    fclose(Archivo);
+    fclose(fp);
 
     for(j = 0; j < num_columna; j++){
     	if(Entrada[j][0] == 0)
@@ -182,7 +180,7 @@ int main(){
     				}
 	    		}
 
-                if(Entrada[j+(vuelta*4)-4][1]==marco_pagina[Indice_Proceso][2]){
+                if(Entrada[j+(vuelta*4)-4][1]==mp[Indice_Proceso][2]){
                     mp[Indice_Proceso][3]++;//Aumentamos la frecuencia 
                 }
 
@@ -204,7 +202,7 @@ int main(){
                 if(Entrada[j+(vuelta*4)-4][0]==0){
                     break;
                 }
-                memory_print(marco_pagina);
+                memory_print(mp);
                 if(desbordamiento==0){
 			
                     printf("El proceso %d se esta ejecutando...\n",Proceso);
@@ -328,4 +326,3 @@ int Busqueda_Proceso(int mp[5][4],int Proceso,int Pagina){
 
 	return Regreso;
 }
-
