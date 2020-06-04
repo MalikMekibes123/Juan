@@ -224,17 +224,21 @@ int main(){
 
     	if(Entrada[j+(vuelta*4)-4][0]==0){
             Terminados++;
-    		printf("Termino el proceso %d procedemos a liberar memoria\n",Proceso );
+    		printf("El proceso %d finalizo.\n",Proceso );
+    		printf("Realizando liberacion de memoria...\n");
+        
     		for (i = 0; i < 5; ++i){
-    			if(marco_pagina[i][1]==Proceso){
+    			if(mp[i][1]==Proceso){
+            
     				mp[i][1]=0;
     				mp[i][2]=0;
     				mp[i][3]=0;
+            
     			}
     		}
     	}
         if(Terminados==4){
-            memory_print(marco_pagina);
+            memory_print(mp);
             exit(0);
         }
     	
